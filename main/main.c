@@ -6,6 +6,9 @@
    software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
    CONDITIONS OF ANY KIND, either express or implied.
 */
+#define USE_TOUCH TOUCH_TYPE_STMPE610
+#define TAG DEMOAPI
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,8 +23,11 @@
 
 #include "drv/disp_spi.h"
 #include "drv/ili9341.h"
-#include "drv/tp_spi.h"
-#include "drv/xpt2046.h"
+#include "drv/stmpe610.h"
+
+// ==== Display dimensions in pixels ============================
+int _width = DEFAULT_TFT_DISPLAY_WIDTH;
+int _height = DEFAULT_TFT_DISPLAY_HEIGHT;
 
 static void IRAM_ATTR lv_tick_task(void);
 
@@ -31,9 +37,9 @@ void app_main()
 
 	disp_spi_init();
 	ili9341_init();
-
-	tp_spi_init();
-    xpt2046_init();
+	stmpe610_Init();
+	vTaskDelay(10 / portTICK_RATE_MS);
+    uint32_t tver = stmpe610_getID();
 
     static lv_color_t buf1[DISP_BUF_SIZE];
     static lv_color_t buf2[DISP_BUF_SIZE];
@@ -46,15 +52,12 @@ void app_main()
 	disp_drv.buffer = &disp_buf;
 	lv_disp_drv_register(&disp_drv);
 
-    // Set TOUCH_SUPPORT on drv\component.mk to 1 if
-    // your board have touch support
-#if ENABLE_TOUCH_INPUT
     lv_indev_drv_t indev_drv;
     lv_indev_drv_init(&indev_drv);
-    indev_drv.read_cb = xpt2046_read;
+    indev_drv.read_cb = TP_read;
     indev_drv.type = LV_INDEV_TYPE_POINTER;
     lv_indev_drv_register(&indev_drv);
-#endif
+    
 
 	esp_register_freertos_tick_hook(lv_tick_task);
 
