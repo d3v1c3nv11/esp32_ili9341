@@ -15,7 +15,8 @@
 #include <freertos/semphr.h>
 #include "freertos/task.h"
 #include "lvgl/lvgl.h"
-#include "ili9341.h"
+#include "display.h"
+#include "board.h"
 
 /*********************
  *      DEFINES
@@ -59,9 +60,9 @@ void disp_spi_init(void)
     };
 
     spi_device_interface_config_t devcfg={
-            .clock_speed_hz=40*1000*1000,           //Clock out at 40 MHz
+            .clock_speed_hz=50*1000*1000,           //Clock out at 50 MHz
             .mode=0,                                //SPI mode 0
-            .spics_io_num=DISP_SPI_CS,              //CS pin
+            .spics_io_num=-1,//DISP_SPI_CS,              //CS pin none
             .queue_size=1,
             .pre_cb=NULL,
             .post_cb=spi_ready,
@@ -69,17 +70,19 @@ void disp_spi_init(void)
     };
 
     //Initialize the SPI bus
-    ret=spi_bus_initialize(HSPI_HOST, &buscfg, 1);
+    ret=spi_bus_initialize(SPI_PORT, &buscfg, 1);
     assert(ret==ESP_OK);
 
     //Attach the LCD to the SPI bus
-    ret=spi_bus_add_device(HSPI_HOST, &devcfg, &spi);
+    ret=spi_bus_add_device(SPI_PORT, &devcfg, &spi);
     assert(ret==ESP_OK);
 }
 
 void disp_spi_send_data(uint8_t * data, uint16_t length)
 {
     if (length == 0) return;           //no need to send anything
+    
+
 
     while(spi_trans_in_progress);
 
@@ -91,13 +94,16 @@ void disp_spi_send_data(uint8_t * data, uint16_t length)
     spi_trans_in_progress = true;
     spi_color_sent = false;             //Mark the "lv_flush_ready" NOT needs to be called in "spi_ready"
     spi_device_queue_trans(spi, &t, portMAX_DELAY);
+    
+    while(spi_trans_in_progress);
 
 }
 
 void disp_spi_send_colors(uint8_t * data, uint16_t length)
 {
     if (length == 0) return;           //no need to send anything
-
+    
+   
     while(spi_trans_in_progress);
 
     spi_transaction_t t = {
@@ -108,6 +114,9 @@ void disp_spi_send_colors(uint8_t * data, uint16_t length)
     spi_trans_in_progress = true;
     spi_color_sent = true;              //Mark the "lv_flush_ready" needs to be called in "spi_ready"
     spi_device_queue_trans(spi, &t, portMAX_DELAY);
+    
+       while(spi_trans_in_progress);
+
 }
 
 

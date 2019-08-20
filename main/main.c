@@ -6,8 +6,6 @@
    software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
    CONDITIONS OF ANY KIND, either express or implied.
 */
-#define USE_TOUCH TOUCH_TYPE_STMPE610
-#define TAG DEMOAPI
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,13 +15,13 @@
 #include "esp_system.h"
 #include "driver/gpio.h"
 #include "lvgl/lvgl.h"
-#include "lv_examples/lv_apps/demo/demo.h"
 #include "esp_freertos_hooks.h"
 
+#include "display.h"
+#include "board.h"
 
-#include "drv/disp_spi.h"
-#include "drv/ili9341.h"
-#include "drv/stmpe610.h"
+#include "lv_examples/lv_apps/demo/demo.h"
+
 
 // ==== Display dimensions in pixels ============================
 int _width = DEFAULT_TFT_DISPLAY_WIDTH;

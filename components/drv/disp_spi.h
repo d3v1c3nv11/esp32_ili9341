@@ -15,13 +15,7 @@ extern "C" {
  *********************/
 #include <stdint.h>
 
-/*********************
- *      DEFINES
- *********************/
 
-#define DISP_SPI_MOSI 23
-#define DISP_SPI_CLK  19
-#define DISP_SPI_CS   22
 
 
 /**********************

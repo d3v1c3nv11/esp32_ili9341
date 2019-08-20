@@ -172,16 +172,9 @@ extern int _height;
 #define STMPE_GPIO_DIR 0x13
 #define STMPE_GPIO_ALT_FUNCT 0x17
 
-//int stmpe610_read_touch(int *x, int* y, uint8_t raw);
+
 bool TP_read(lv_indev_drv_t * drv, lv_indev_data_t * data);
-//static void IRAM_ATTR stmpe610_write_reg(uint8_t reg, uint8_t val) ;
-//static int i2c_init();
-//static uint8_t IRAM_ATTR stmpe610_read_byte(uint8_t reg);
-//static uint16_t IRAM_ATTR stmpe610_read_word(uint8_t reg);
 uint32_t stmpe610_getID();
 void stmpe610_Init();
-//int stmpe610_get_touch(uint16_t *x, uint16_t *y, uint16_t *z);
-
-
 
 #endif /* _STMPE610_H */

@@ -8,7 +8,8 @@
 #include "esp_heap_caps.h"
 #include "soc/spi_reg.h"
 #include "driver/i2c.h"
-#include "stmpe610.h"
+#include "board.h"
+#include "display.h"
 
 #define USE_TOUCH TOUCH_TYPE_STMPE610
 
@@ -163,8 +164,8 @@ esp_err_t get_i2c_pins(i2c_port_t port, i2c_config_t *i2c_config)
 {
    
     if (port == I2C_NUM_0 || port == I2C_NUM_1) {
-        i2c_config->sda_io_num = GPIO_NUM_18;
-        i2c_config->scl_io_num = GPIO_NUM_23;
+        i2c_config->sda_io_num = I2C_SDA;
+        i2c_config->scl_io_num = I2C_SCL;
     } else {
         i2c_config->sda_io_num = -1;
         i2c_config->scl_io_num = -1;
@@ -176,9 +177,9 @@ esp_err_t get_i2c_pins(i2c_port_t port, i2c_config_t *i2c_config)
 static int i2c_init()
 {
     int res;
-    get_i2c_pins(I2C_NUM_0, &es_i2c_cfg);    
-    res = i2c_param_config(I2C_NUM_0, &es_i2c_cfg);
-    res |= i2c_driver_install(I2C_NUM_0, es_i2c_cfg.mode, 0, 0, 0);
+    get_i2c_pins(I2C_PORT, &es_i2c_cfg);    
+    res = i2c_param_config(I2C_PORT, &es_i2c_cfg);
+    res |= i2c_driver_install(I2C_PORT, es_i2c_cfg.mode, 0, 0, 0);
     //ES_ASSERT(res, "i2c_init error", -1);
     if (res) printf("i2c_init error"); else printf("i2c_init success\n");
     return res;

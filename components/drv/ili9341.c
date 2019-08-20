@@ -78,17 +78,26 @@ void ili9341_init(void)
 
 	//Initialize non-SPI GPIOs
 	gpio_set_direction(ILI9341_DC, GPIO_MODE_OUTPUT);
+	PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[ILI9341_DC], PIN_FUNC_GPIO);
+#if ILI9341_RST > 0	
 	gpio_set_direction(ILI9341_RST, GPIO_MODE_OUTPUT);
+#endif
+#if ILI9341_BCKL > 0
 	gpio_set_direction(ILI9341_BCKL, GPIO_MODE_OUTPUT);
-
+#endif	
+	PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[DISP_SPI_CS], PIN_FUNC_GPIO);
+	gpio_set_direction(DISP_SPI_CS, GPIO_MODE_OUTPUT);
+	gpio_set_level(DISP_SPI_CS, 1);
+	
 	//Reset the display
+#if ILI9341_RST > 0 
 	gpio_set_level(ILI9341_RST, 0);
 	vTaskDelay(100 / portTICK_RATE_MS);
 	gpio_set_level(ILI9341_RST, 1);
 	vTaskDelay(100 / portTICK_RATE_MS);
+#endif
 
-
-	printf("ILI9341 initialization.\n");
+	printf("ILI9341 initialization. MOSI=%d, SCK=%d, CS=%d, DC=%d, BOARD=%d\n",DISP_SPI_MOSI,DISP_SPI_CLK,DISP_SPI_CS,ILI9341_DC,CONFIG_EXAMPLE_BOARD_TYPE);
 
 
 	//Send all the commands
@@ -101,10 +110,11 @@ void ili9341_init(void)
 		}
 		cmd++;
 	}
-
+#if ILI9341_BCKL > 0 
 	///Enable backlight
 	printf("Enable backlight.\n");
 	gpio_set_level(ILI9341_BCKL, ILI9341_BCKL_ACTIVE_LVL);
+#endif	
 }
 
 
@@ -145,18 +155,27 @@ void ili9341_flush(lv_disp_drv_t * drv, const lv_area_t * area, lv_color_t * col
 
 static void ili9341_send_cmd(uint8_t cmd)
 {
+	
+
 	gpio_set_level(ILI9341_DC, 0);	 /*Command mode*/
+    gpio_set_level(DISP_SPI_CS, 0);
 	disp_spi_send_data(&cmd, 1);
+	gpio_set_level(DISP_SPI_CS, 1);
 }
 
 static void ili9341_send_data(void * data, uint16_t length)
 {
+	
 	gpio_set_level(ILI9341_DC, 1);	 /*Data mode*/
+    gpio_set_level(DISP_SPI_CS, 0);
 	disp_spi_send_data(data, length);
+	gpio_set_level(DISP_SPI_CS, 1);
 }
 
 static void ili9341_send_color(void * data, uint16_t length)
 {
     gpio_set_level(ILI9341_DC, 1);   /*Data mode*/
+    gpio_set_level(DISP_SPI_CS, 0);
     disp_spi_send_colors(data, length);
+    gpio_set_level(DISP_SPI_CS, 1);
 }
