@@ -33,9 +33,7 @@ void app_main()
 {
 	lv_init();
 
-	disp_spi_init();
-	ili9341_init();
-	stmpe610_Init();
+	board_init();
 	vTaskDelay(10 / portTICK_RATE_MS);
     uint32_t tver = stmpe610_getID();
 
