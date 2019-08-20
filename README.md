@@ -4,7 +4,7 @@
 ## Get started 
 ### Install the ESP32 SDK
 1. Install ESP-IDF: http://esp-idf.readthedocs.io/en/latest/
-2. Get this projects: `git clone --recurse-submodules https://github.com/littlevgl/esp32_ili9341.git`
+2. Get this projects: `git clone --recurse-submodules https://github.com/d3v1c3nv11/esp32_ili9341.git`
 
 ### Add LittlevGL to the build
 To link LittlevGL (lvgl) and lv_examples with ESP-IDF you need to add a **component.mk** file to each directory.
@@ -18,6 +18,26 @@ Next to this README file you find two component.mk template files:
 Rename `lvgl_component.mk` to `component.mk` and move it to the `lvgl` directory, then rename `lv_example_component.mk` to `component.mk` and move it to the `lv_examples` directory, remember `lvgl` and `lv_examples` directories are located into the **components** directory.
 
 ### Configuration options
+
+## Olimex Boards (Default)
+
+For all Olimex boards use 
+```bash
+make menuconfig
+```
+Select predefined board configuration (Olimex ESP32-ADF Rev.B)  ---> 
+
+```bash
+( ) Olimex ESP32-EVB
+( ) Olimex ESP32-PoE
+(X) Olimex ESP32-ADF Rev.B
+( ) Olimex ESP32-ADF Rev.C
+( ) ESP-Wrover-Kit v4.1
+( ) User Board  
+```
+
+
+### For all other boards
 Some displays doesn't support the same options, for example, the ESP-Wrover-Kit doesn't have the touch controller and this is usual on other ILI9341 displays.
 
 #### Touch controller
@@ -32,7 +52,8 @@ You can change the size of your display in `lv_conf.h` in `LV_HOR\VER_RES_MAX`.
 ### AssTign the correct pinout depending on your ESP32 dev board
 There are several development boards based on the ESP32 chip, make sure you assign the correct pin numbers to the signals that interface with the TFT display board, below are some examples:
 
-## ESP-Wrover-Kit v4.1 (Default)
+
+## ESP-Wrover-Kit v4.1
 
 ![Example GUI with LittlevGL on ESP32](esp_wrover_kit.jpg)
 
