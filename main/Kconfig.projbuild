@@ -1,0 +1,45 @@
+menu "TFT Display DEMO Configuration"
+
+config EXAMPLE_DISPLAY_TYPE
+    int
+    default 0 if EXAMPLE_DISPLAY_TYPE0
+    default 1 if EXAMPLE_DISPLAY_TYPE1
+    default 2 if EXAMPLE_DISPLAY_TYPE2
+
+    choice
+        prompt "Select predefined display configuration"
+        default EXAMPLE_DISPLAY_TYPE2
+        help
+            Select predefined display configuration
+    
+        config EXAMPLE_DISPLAY_TYPE0
+            bool "None"
+        config EXAMPLE_DISPLAY_TYPE1
+            bool "ESP-WROVER-KIT Display"
+        config EXAMPLE_DISPLAY_TYPE2
+            bool "Olimex MOD-LCD2.8RTP"
+    endchoice
+    
+config EXAMPLE_BOARD_TYPE
+    int
+    default 0 if EXAMPLE_BOARD_TYPE0
+    default 1 if EXAMPLE_BOARD_TYPE1
+    default 2 if EXAMPLE_BOARD_TYPE2
+	default 3 if EXAMPLE_BOARD_TYPE3
+	
+    choice
+        prompt "Select predefined board configuration"
+        default EXAMPLE_BOARD_TYPE2
+        help
+            Select predefined board configuration
+    
+        config EXAMPLE_BOARD_TYPE0
+            bool "Olimex ESP32-EVB"
+        config EXAMPLE_BOARD_TYPE1
+            bool "Olimex ESP32-PoE"
+        config EXAMPLE_BOARD_TYPE2
+            bool "Olimex ESP32-ADF Rev.B"
+        config EXAMPLE_BOARD_TYPE3
+            bool "Olimex ESP32-ADF Rev.C"    
+    endchoice
+endmenu
