@@ -226,15 +226,10 @@ static uint16_t IRAM_ATTR stmpe610_read_word(uint8_t reg) {
     // now send device address (indicating read) & read data
     i2c_master_write_byte(cmd, STMPE610_ADDR | 1, 1);
     i2c_master_read(cmd,(uint8_t *) data,2, 0);
-    //i2c_master_read_byte(cmd, &data[0], 1);
-    //i2c_master_read_byte(cmd, &data[1], 1);
     i2c_master_stop(cmd);
-   //esp_err_t ret = 
    i2c_master_cmd_begin(I2C_NUM_0, cmd, 1000 / portTICK_RATE_MS);
     i2c_cmd_link_delete(cmd);
     regdata = data[0] | ( data[1] << 8);
-    
-  //  printf("i2c read word 0x%02x: 0x%04x\r\n",reg,regdata);
     return regdata;
 
 }
@@ -251,11 +246,8 @@ uint32_t stmpe610_getID()
 void stmpe610_Init()
 {
 
-//#ifndef STMPE610_SPI
 	i2c_init();
-//#endif	
-
-
+	
     stmpe610_write_reg(STMPE610_REG_SYS_CTRL1, 0x02);        // Software chip reset
     vTaskDelay(10 / portTICK_RATE_MS);
 
